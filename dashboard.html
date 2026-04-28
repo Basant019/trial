@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkySafe | Dashboard</title>
+  <meta name="description"
+    content="SkySafe Dashboard — Submit disaster reports, manage trips, and review all activity." />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="frontend/css/global.css" />
+  <link rel="stylesheet" href="frontend/css/dashboard.css" />
+  <script src="frontend/js/theme.js"></script>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
+  <nav class="navbar">
+    <a href="dashboard.html" class="nav-brand">
+      <div class="nav-brand-icon"><i class="fas fa-shield-halved"></i></div>
+      <div class="nav-brand-text">SKY<span>SAFE</span></div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="dashboard.html" class="nav-link active" id="nav-dashboard"><i class="fas fa-gauge-high"></i>
+          Dashboard</a></li>
+      <li><a href="forecast.html" class="nav-link" id="nav-forecast"><i class="fas fa-cloud-sun"></i> Forecast</a></li>
+      <li><a href="alert.html" class="nav-link" id="nav-alerts"><i class="fas fa-triangle-exclamation"></i> Alerts</a>
+      </li>
+      <li><a href="trip.html" class="nav-link" id="nav-trip"><i class="fas fa-map-location-dot"></i> Plan Trip</a></li>
+      <li><a href="Map.html" class="nav-link" id="nav-map"><i class="fas fa-map"></i> Map</a></li>
+      <li id="adminNavItem" style="display:none"><a href="admin-dashboard.html" class="nav-link" id="nav-admin"
+          style="color:#f59e0b"><i class="fas fa-shield-halved"></i> Admin Panel</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggleBtn" title="Toggle Dark/Light Mode" aria-label="Toggle theme">
+        <i class="fas fa-sun icon-sun"></i>
+        <i class="fas fa-moon icon-moon"></i>
+      </button>
+      <span class="role-badge" id="roleBadge">User</span>
+      <div class="nav-user">
+        <div class="nav-avatar" id="navAvatar">U</div>
+        <span class="nav-user-name user-name" id="navUserName">User</span>
+      </div>
+      <button class="btn-logout" id="logoutBtn"><i class="fas fa-right-from-bracket"></i> <span>Logout</span></button>
+      <button class="navbar-hamburger" id="navHamburger" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile nav drawer -->
+  <div class="navbar-mobile-menu" id="navMobileMenu">
+    <a href="dashboard.html" class="active"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="forecast.html"><i class="fas fa-cloud-sun"></i> Forecast</a>
+    <a href="alert.html"><i class="fas fa-triangle-exclamation"></i> Alerts</a>
+    <a href="trip.html"><i class="fas fa-map-location-dot"></i> Plan Trip</a>
+    <a href="Map.html"><i class="fas fa-map"></i> Map</a>
+    <a href="admin-dashboard.html" id="mobileAdminLink" style="display:none;color:#f59e0b"><i
+        class="fas fa-shield-halved"></i> Admin Panel</a>
+  </div>
+
+  <!-- ═══════════════════════ MAIN WRAPPER ═══════════════════════ -->
+  <div class="main-wrap">
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+      <div class="dashboard-header-inner">
+        <div>
+          <div class="dashboard-greeting">Welcome back 👋</div>
+          <h1 class="dashboard-title" id="dashTitle">My Dashboard</h1>
+          <p class="dashboard-subtitle" id="dashSubtitle">Your personal command center</p>
+        </div>
+        <!-- Primary action button — changes based on role -->
+        <div id="headerAction"></div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row" id="statsRow"></div>
+
+    <!-- Content -->
+    <div class="content-area" id="contentArea">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════ MODALS ═══════════════════════ -->
+
+  <!-- Submit Report Modal -->
+  <div class="modal-overlay" id="reportModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title"><i class="fas fa-file-circle-exclamation"
+            style="color:var(--warning);margin-right:8px"></i>Submit Disaster Report</span>
+        <button class="modal-close" onclick="closeModal('reportModal')"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Disaster Type *</label>
+            <select class="field-select" id="rDisasterType">
+              <option value="">Select type...</option>
+              <option value="flood">🌊 Flood</option>
+              <option value="earthquake">🌍 Earthquake</option>
+              <option value="fire">🔥 Fire</option>
+              <option value="cyclone">🌀 Cyclone / Storm</option>
+              <option value="landslide">⛰️ Landslide</option>
+              <option value="drought">☀️ Drought</option>
+              <option value="heatwave">🌡️ Heatwave</option>
+              <option value="tsunami">🌊 Tsunami</option>
+              <option value="chemical">☢️ Chemical Hazard</option>
+              <option value="other">⚠️ Other</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Severity *</label>
+            <select class="field-select" id="rSeverity">
+              <option value="">Select...</option>
+              <option value="low">🟢 Low</option>
+              <option value="medium">🟡 Medium</option>
+              <option value="high">🟠 High</option>
+              <option value="critical">🔴 Critical</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Location *</label>
+          <input class="field-input" id="rLocation" type="text" placeholder="e.g. Mumbai, Maharashtra" />
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Latitude (optional)</label>
+            <input class="field-input" id="rLat" type="number" step="any" placeholder="e.g. 19.0760" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Longitude (optional)</label>
+            <input class="field-input" id="rLng" type="number" step="any" placeholder="e.g. 72.8777" />
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Description *</label>
+          <textarea class="field-textarea" id="rDescription"
+            placeholder="Describe the disaster situation in detail — what you saw, when it started, how severe it is..."></textarea>
+        </div>
+        <div id="reportFormMsg" style="font-size:13px;display:none"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('reportModal')">Cancel</button>
+        <button class="btn btn-primary" id="submitReportBtn" onclick="submitReport()">
+          <i class="fas fa-paper-plane"></i> Submit Report
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin: Update Report Status Modal -->
+  <div class="modal-overlay" id="updateReportModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title"><i class="fas fa-pen-to-square"
+            style="color:var(--primary-light);margin-right:8px"></i>Update Report Status</span>
+        <button class="modal-close" onclick="closeModal('updateReportModal')"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="updateReportId" />
+        <div class="field-group">
+          <label class="field-label">New Status *</label>
+          <select class="field-select" id="updateStatus">
+            <option value="pending">⏳ Pending</option>
+            <option value="reviewing">🔍 Reviewing</option>
+            <option value="resolved">✅ Resolved</option>
+            <option value="rejected">❌ Rejected</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Admin Notes</label>
+          <textarea class="field-textarea" id="updateNotes"
+            placeholder="Add notes about actions taken, resolution details, or reason for rejection..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('updateReportModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveReportStatus()"><i class="fas fa-check"></i> Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Report Detail Modal -->
+  <div class="modal-overlay" id="reportDetailModal">
+    <div class="modal" style="max-width:640px">
+      <div class="modal-header">
+        <span class="modal-title"><i class="fas fa-circle-info" style="color:var(--accent);margin-right:8px"></i>Report
+          Details</span>
+        <button class="modal-close" onclick="closeModal('reportDetailModal')"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="reportDetailBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('reportDetailModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Trip Modal -->
+  <div class="modal-overlay" id="editTripModal">
+    <div class="modal" style="max-width:600px">
+      <div class="modal-header">
+        <span class="modal-title"><i class="fas fa-pen-ruler" style="color:var(--accent);margin-right:8px"></i>Edit
+          Trip</span>
+        <button class="modal-close" onclick="closeModal('editTripModal')"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editTripId" />
+        <div class="field-group">
+          <label class="field-label">Trip Name</label>
+          <input class="field-input" id="etName" type="text" placeholder="e.g. Goa Summer Adventure" />
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Start Date</label>
+            <input class="field-input" id="etStart" type="date" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">End Date</label>
+            <input class="field-input" id="etEnd" type="date" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label">Travel Mode</label>
+            <select class="field-select" id="etMode">
+              <option value="car">🚗 Car</option>
+              <option value="bus">🚌 Bus</option>
+              <option value="train">🚆 Train</option>
+              <option value="flight">✈️ Flight</option>
+              <option value="bike">🏍️ Bike</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Status</label>
+            <select class="field-select" id="etStatus">
+              <option value="planned">Planned</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Interests / Activities</label>
+          <input class="field-input" id="etInterests" type="text" placeholder="e.g. beaches, food, culture" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Notes &amp; Additional Details</label>
+          <textarea class="field-textarea" id="etNotes"
+            placeholder="Add any personal notes, booking references, or custom plan changes..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('editTripModal')">Cancel</button>
+        <button class="btn btn-accent" onclick="saveTrip()"><i class="fas fa-floppy-disk"></i> Save Trip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Note/Update to Trip Modal -->
+  <div class="modal-overlay" id="addUpdateModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title"><i class="fas fa-note-sticky" style="color:var(--accent);margin-right:8px"></i>Add to
+          Trip</span>
+        <button class="modal-close" onclick="closeModal('addUpdateModal')"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="updateTripId" />
+        <div class="field-group">
+          <label class="field-label">Type</label>
+          <select class="field-select" id="updateType">
+            <option value="note">📝 Note</option>
+            <option value="change">✏️ Change / Update</option>
+            <option value="add_activity">🎯 Add Activity</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Title (optional)</label>
+          <input class="field-input" id="updateTitle" type="text" placeholder="e.g. Day 2 change, Hotel booked..." />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Content *</label>
+          <textarea class="field-textarea" id="updateContent"
+            placeholder="Write your note, change, or activity here..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('addUpdateModal')">Cancel</button>
+        <button class="btn btn-success" onclick="saveTripUpdate()"><i class="fas fa-plus"></i> Add to Trip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Trip Updates Modal -->
+  <div class="modal-overlay" id="tripUpdatesModal">
+    <div class="modal" style="max-width:600px">
+      <div class="modal-header">
+        <span class="modal-title"><i class="fas fa-clock-rotate-left"
+            style="color:var(--accent);margin-right:8px"></i>Trip Log</span>
+        <button class="modal-close" onclick="closeModal('tripUpdatesModal')"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="tripUpdatesBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('tripUpdatesModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="frontend/js/dashboard.js"></script>
+  <script>
+    // Hamburger menu toggle
+    const hamburger = document.getElementById('navHamburger');
+    const mobileMenu = document.getElementById('navMobileMenu');
+    if (hamburger && mobileMenu) {
+      hamburger.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+        const icon = hamburger.querySelector('i');
+        icon.className = mobileMenu.classList.contains('open') ? 'fas fa-times' : 'fas fa-bars';
+      });
+      // Close on outside click
+      document.addEventListener('click', (e) => {
+        if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+          mobileMenu.classList.remove('open');
+          hamburger.querySelector('i').className = 'fas fa-bars';
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkySafe — Weather-Based Trip Planner</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="frontend/css/trip.css" />
+  <link rel="stylesheet" href="frontend/css/responsive.css" />
+</head>
+<body>
+  <nav class="ss-nav">
+    <a href="dashboard.html" class="ss-nav-brand">
+      <div class="ss-nav-brand-icon"><i class="fas fa-shield-alt"></i></div>
+      <div class="ss-nav-brand-text">SKY<span>SAFE</span></div>
+    </a>
+
+    <ul class="ss-nav-links">
+      <li><a href="dashboard.html"><i class="fas fa-gauge-high"></i> <span>Dashboard</span></a></li>
+      <li><a href="Map.html"><i class="fas fa-map"></i> <span>Map</span></a></li>
+      <li><a href="forecast.html"><i class="fas fa-cloud-sun"></i> <span>Forecast</span></a></li>
+      <li><a href="alert.html"><i class="fas fa-triangle-exclamation"></i> <span>Alerts</span></a></li>
+      <li><a href="trip.html" class="ss-active"><i class="fas fa-map-location-dot"></i> <span>Trip Planner</span></a></li>
+    </ul>
+
+    <div class="ss-nav-right">
+      <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+        <i class="fas fa-sun"></i>
+      </button>
+      <button class="btn-logout" onclick="localStorage.clear();window.location.href='login.html'" style="background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-size:13px;">
+        <i class="fas fa-sign-out-alt"></i> <span class="d-mobile-none">Logout</span>
+      </button>
+      <button class="ss-hamburger" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="ss-mobile-menu" id="mobileMenu">
+    <a href="dashboard.html"><i class="fas fa-gauge-high"></i> Dashboard</a>
+    <a href="Map.html"><i class="fas fa-map"></i> Map</a>
+    <a href="forecast.html"><i class="fas fa-cloud-sun"></i> Forecast</a>
+    <a href="alert.html"><i class="fas fa-triangle-exclamation"></i> Alerts</a>
+    <a href="trip.html" class="ss-active"><i class="fas fa-map-location-dot"></i> Trip Planner</a>
+  </div>
+
+  <!-- ─── Hero ─── -->
+  <section class="hero">
+    <h1>Plan Smarter. Travel Safer.</h1>
+    <p>Get a real weather-aware, AI-generated itinerary for your next trip — with live weather data and actual tourist places.</p>
+  </section>
+
+  <!-- ─── Main ─── -->
+  <main class="page-wrapper">
+
+    <!-- FORM CARD -->
+    <div class="form-card-outer">
+      <div class="card">
+        <div class="card-title">✈️ Plan Your Trip</div>
+        <div class="card-subtitle">Fill in the details below and we'll generate a smart itinerary for you.</div>
+
+        <form id="tripForm" autocomplete="off">
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label for="currentLocation">Current Location</label>
+              <input type="text" id="currentLocation" placeholder="e.g. Delhi" />
+            </div>
+
+            <div class="form-group">
+              <label for="destination">Destination City *</label>
+              <input type="text" id="destination" placeholder="e.g. Manali" required />
+            </div>
+
+            <div class="form-group">
+              <label for="travelDate">Travel Date *</label>
+              <input type="date" id="travelDate" required />
+            </div>
+
+            <div class="form-group">
+              <label for="numDays">Number of Days</label>
+              <input type="number" id="numDays" value="3" min="1" max="15" />
+            </div>
+
+            <div class="form-group">
+              <label for="numPeople">Number of People</label>
+              <input type="number" id="numPeople" value="2" min="1" max="50" />
+            </div>
+
+            <div class="form-group">
+              <label for="budget">Budget Level</label>
+              <select id="budget">
+                <option value="low">🪙 Low (Budget)</option>
+                <option value="medium" selected>💳 Medium (Standard)</option>
+                <option value="high">💎 High (Luxury)</option>
+              </select>
+            </div>
+
+            <!-- Interests -->
+            <div class="form-group full">
+              <label>Interests (select all that apply)</label>
+              <div class="interests-grid">
+                <label class="interest-chip">
+                  <input type="checkbox" value="mountains" /> ⛰ Mountains
+                </label>
+                <label class="interest-chip">
+                  <input type="checkbox" value="beaches" /> 🏖 Beaches
+                </label>
+                <label class="interest-chip">
+                  <input type="checkbox" value="spiritual" /> 🕌 Spiritual
+                </label>
+                <label class="interest-chip">
+                  <input type="checkbox" value="food" /> 🍜 Food
+                </label>
+                <label class="interest-chip">
+                  <input type="checkbox" value="adventure" /> 🧗 Adventure
+                </label>
+                <label class="interest-chip">
+                  <input type="checkbox" value="nature" /> 🌿 Nature
+                </label>
+                <label class="interest-chip">
+                  <input type="checkbox" value="historical" checked /> 🏛 Historical
+                </label>
+                <label class="interest-chip checked">
+                  <input type="checkbox" value="family" /> 👨‍👩‍👧 Family
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="form-group full">
+              <button type="submit" class="btn-submit" id="submitBtn">
+                <span id="btnText">✈️ Plan My Trip</span>
+                <div class="spinner" id="btnSpinner" style="display:none;"></div>
+              </button>
+            </div>
+
+          </div>
+        </form>
+
+        <!-- Error Banner -->
+        <div class="error-banner" id="errorBanner"></div>
+      </div>
+    </div>
+
+    <!-- ─── RESULTS ─── -->
+    <div id="results" class="section-gap">
+
+      <!-- Trip Summary Bar -->
+      <div class="trip-summary-bar" id="tripSummary"></div>
+
+      <div class="results-grid">
+
+        <!-- Left Column -->
+        <div>
+
+          <!-- Weather -->
+          <div class="card section-gap" id="weatherCard">
+            <!-- Filled by JS -->
+          </div>
+
+          <!-- Itinerary -->
+          <div class="card section-gap">
+            <div class="card-title">🗓 Day-wise Itinerary</div>
+            <div class="card-subtitle">Planned based on weather conditions and your interests.</div>
+            <div id="itineraryContainer"></div>
+          </div>
+
+        </div>
+
+        <!-- Right Column -->
+        <div>
+
+          <!-- Budget -->
+          <div class="card section-gap">
+            <div class="card-title">💰 Budget Estimate</div>
+            <div class="card-subtitle">Estimated costs in Indian Rupees (INR).</div>
+            <div id="budgetCard"></div>
+          </div>
+
+          <!-- Packing List -->
+          <div class="card section-gap">
+            <div class="card-title">🎒 Packing Checklist</div>
+            <div class="card-subtitle">Suggested items based on weather &amp; your interests.</div>
+            <div id="packingList"></div>
+          </div>
+
+          <!-- Safety Tips -->
+          <div class="card section-gap">
+            <div class="card-title">🛡 Safety Tips</div>
+            <div class="card-subtitle">Stay safe during your journey.</div>
+            <div id="safetyList"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Map (full width) -->
+      <div class="card section-gap">
+        <div class="card-title">🗺 Trip Map</div>
+        <div class="card-subtitle">Destination and nearby tourist places plotted on the map.</div>
+        <div id="trip-map"></div>
+      </div>
+
+      <!-- Nearby Places Grid -->
+      <div class="card section-gap">
+        <div class="card-title">📌 Nearby Places</div>
+        <div class="card-subtitle">Real tourist attractions near your destination.</div>
+        <div id="placesList"></div>
+      </div>
+
+    </div>
+    <!-- /results -->
+
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Trip JS -->
+  <script src="frontend/js/trip.js"></script>
+</body>
+</html>

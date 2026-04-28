@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkySafe | Create Account</title>
+  <meta name="description" content="Create your SkySafe account – Weather forecast, disaster alerts & AI trip planning."/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="frontend/css/global.css"/>
+  <link rel="stylesheet" href="frontend/css/auth.css"/>
+  <link rel="stylesheet" href="frontend/css/responsive.css"/>
+  <script src="frontend/js/theme.js"></script>
+</head>
+<body>
+
+  <!-- Theme Toggle -->
+  <div style="position:fixed;top:16px;right:16px;z-index:1000;">
+    <button class="theme-toggle" id="themeToggle" title="Toggle Theme" aria-label="Toggle theme">
+      <i class="fas fa-sun" style="display:none;"></i>
+      <i class="fas fa-moon"></i>
+    </button>
+  </div>
+
+  <!-- Floating weather icons -->
+  <div class="floating-icons" aria-hidden="true">
+    <span class="fi fi-1">🌤</span>
+    <span class="fi fi-2">⛈</span>
+    <span class="fi fi-3">🌪</span>
+    <span class="fi fi-4">❄️</span>
+    <span class="fi fi-5">🌧</span>
+    <span class="fi fi-6">⚡</span>
+  </div>
+
+  <!-- Main wrapper -->
+  <div class="register-wrapper">
+    <div class="register-card">
+
+      <!-- ── LEFT PANEL ── -->
+      <div class="left-panel">
+
+        <div class="brand">
+          <div class="brand-icon"><i class="fas fa-shield-halved"></i></div>
+          <span class="brand-text">SKY<span>SAFE</span></span>
+        </div>
+
+        <!-- Animated globe -->
+        <div class="globe-wrap">
+          <div class="globe-glow"></div>
+          <div class="globe-ring rg1"></div>
+          <div class="globe-ring rg2"></div>
+          <div class="globe">
+            <div class="globe-grid"></div>
+            <div class="globe-sweep"></div>
+            <span class="gdot gd1"></span>
+            <span class="gdot gd2"></span>
+            <span class="gdot gd3"></span>
+          </div>
+        </div>
+
+        <div class="left-copy">
+          <h2>SkySafe</h2>
+          <p>Create your account and start monitoring the world's weather in real time.</p>
+        </div>
+
+        <ul class="benefits">
+          <li><i class="fas fa-check-circle"></i> Live weather &amp; radar maps</li>
+          <li><i class="fas fa-check-circle"></i> 7-day precision forecasts</li>
+          <li><i class="fas fa-check-circle"></i> Severe weather alerts</li>
+          <li><i class="fas fa-check-circle"></i> AI-powered trip planner</li>
+        </ul>
+
+      </div>
+
+      <!-- ── RIGHT PANEL ── -->
+      <div class="right-panel">
+
+        <div class="rp-header">
+          <div class="rp-tag">NEW ACCOUNT</div>
+          <h1 class="rp-title">Create Account</h1>
+          <p class="rp-sub">Fill in your details to get started</p>
+        </div>
+
+        <!-- id="form" — matches auth.js -->
+        <form id="form" novalidate>
+
+          <!-- id="fname" — matches auth.js -->
+          <div class="field-wrap">
+            <label class="field-label" for="fname">
+              <i class="fas fa-user"></i> First Name
+            </label>
+            <div class="input-wrap">
+              <input type="text" id="fname" class="field-input" placeholder="Enter your name" autocomplete="given-name"/>
+            </div>
+          </div>
+
+          <!-- id="email" — matches auth.js -->
+          <div class="field-wrap">
+            <label class="field-label" for="email">
+              <i class="fas fa-envelope"></i> Email Address
+            </label>
+            <div class="input-wrap">
+              <input type="email" id="email" class="field-input" placeholder="you@example.com" autocomplete="email"/>
+            </div>
+          </div>
+
+          <!-- id="p1" — matches auth.js -->
+          <div class="field-wrap">
+            <label class="field-label" for="p1">
+              <i class="fas fa-lock"></i> Password
+            </label>
+            <div class="input-eye-wrap">
+              <input type="password" id="p1" class="field-input" placeholder="Create a password" autocomplete="new-password"/>
+              <button type="button" class="eye-btn" id="eyeBtn1" tabindex="-1">
+                <i class="fas fa-eye" id="eyeIc1"></i>
+              </button>
+            </div>
+            <!-- Strength bar -->
+            <div class="strength-row">
+              <div class="strength-track">
+                <div class="strength-fill" id="strengthFill"></div>
+              </div>
+              <span class="strength-lbl" id="strengthLbl"></span>
+            </div>
+          </div>
+
+          <!-- id="p2" — matches auth.js -->
+          <div class="field-wrap">
+            <label class="field-label" for="p2">
+              <i class="fas fa-lock-open"></i> Confirm Password
+            </label>
+            <div class="input-eye-wrap">
+              <input type="password" id="p2" class="field-input" placeholder="Confirm your password" autocomplete="new-password"/>
+              <button type="button" class="eye-btn" id="eyeBtn2" tabindex="-1">
+                <i class="fas fa-eye" id="eyeIc2"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-register">
+            <span>Create Account</span>
+            <i class="fas fa-arrow-right btn-arrow"></i>
+            <span class="btn-glow"></span>
+          </button>
+
+        </form>
+
+        <!-- id="msg" — matches auth.js -->
+        <p id="msg" class="msg-text" style="text-align:center;margin-top:12px;"></p>
+
+        <p class="rp-footer">Already have an account? <a href="login.html" class="signin-link">Sign in</a></p>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="frontend/js/auth.js"></script>
+
+</body>
+</html>

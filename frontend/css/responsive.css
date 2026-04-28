@@ -1,0 +1,727 @@
+/* ============================================================
+   SkySafe — Global Responsive & Shared Navbar CSS
+   Applies to ALL pages via <link rel="stylesheet" href="../css/responsive.css">
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ── Reset & Base ─────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
+}
+
+/* ── Shared Navbar (ss-nav) ───────────────────────────────── */
+/* Used on pages that want the unified SkySafe navbar.
+   Include this CSS + the navbar HTML snippet.             */
+.ss-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 1100;
+  background: rgba(6, 11, 20, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Brand */
+.ss-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.ss-nav-brand-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  color: #fff;
+}
+
+.ss-nav-brand-text {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #fff;
+}
+
+.ss-nav-brand-text span {
+  color: #06b6d4;
+}
+
+/* Links list */
+.ss-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  margin-left: 16px;
+}
+
+.ss-nav-links a,
+.ss-nav-links span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.ss-nav-links a:hover,
+.ss-nav-links a.ss-active {
+  color: #f0f6ff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.ss-nav-links a.ss-active {
+  color: #60a5fa;
+}
+
+.ss-nav-links a i {
+  font-size: 13px;
+}
+
+/* Right end */
+.ss-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Hamburger */
+.ss-hamburger {
+  display: none;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 7px;
+  color: #94a3b8;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 16px;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.ss-hamburger:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Mobile nav drawer */
+.ss-mobile-menu {
+  display: none;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background: rgba(6, 11, 20, 0.98);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 12px 16px 16px;
+  z-index: 1099;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ss-mobile-menu.open {
+  display: flex;
+}
+
+.ss-mobile-menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 8px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.ss-mobile-menu a:hover,
+.ss-mobile-menu a.ss-active {
+  background: rgba(255, 255, 255, 0.07);
+  color: #f0f6ff;
+}
+
+.ss-mobile-menu a.ss-active {
+  color: #60a5fa;
+}
+
+.ss-mobile-menu a i {
+  width: 18px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* ── Responsive Breakpoints ───────────────────────────────── */
+
+/* LARGE TABLET / small laptop (≤ 1024px) */
+@media (max-width: 1024px) {
+
+  .ss-nav-links a span,
+  .ss-nav-links span span {
+    display: none;
+  }
+
+  /* hide text, keep icons */
+}
+
+/* TABLET (≤ 768px) */
+@media (max-width: 768px) {
+  .ss-nav-links {
+    display: none;
+  }
+
+  .ss-hamburger {
+    display: flex;
+  }
+
+  /* Trip page responsive fixes */
+  .form-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .cat-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+
+  .res-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .res-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .dest-highlight {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  #tripMap {
+    height: 280px !important;
+  }
+
+  /* Dashboard nav hide on mobile (uses hamburger) */
+  .navbar .nav-links {
+    display: none;
+  }
+
+  /* Forecast nav hide */
+  .top-nav .nav-link-btn span {
+    display: none;
+  }
+
+  /* Stats grid 2 columns */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Day cards in forecast — remove flex bar */
+  .day-card {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .day-bar-wrap {
+    flex: none;
+    width: 100%;
+    order: 5;
+  }
+
+  .day-desc {
+    flex: none;
+    width: 100%;
+  }
+
+  /* Alert page hero buttons stack */
+  .hero-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Map sidebar collapse */
+  .map-sidebar {
+    width: 260px !important;
+  }
+
+  /* Admin dashboard sidebar hides on mobile */
+  .sidebar {
+    display: none !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+  }
+}
+
+/* MOBILE (≤ 480px) */
+@media (max-width: 480px) {
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .cat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .res-right {
+    grid-template-columns: 1fr;
+  }
+
+  .dest-highlight {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Forecast search full width */
+  .forecast-search {
+    flex-direction: column;
+  }
+
+  .forecast-search input,
+  .btn-search {
+    width: 100%;
+  }
+
+  /* Reduce huge hero text */
+  .hero-h1 {
+    font-size: clamp(1.8rem, 8vw, 3rem) !important;
+  }
+
+  /* Trip banner stacks */
+  .trip-banner {
+    flex-direction: column;
+  }
+
+  .tb-stats {
+    justify-content: center;
+  }
+
+  /* Button full width on tiny screens */
+  .btn-gen {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Stats single column */
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Modal full width */
+  .modal {
+    border-radius: 16px 16px 0 0 !important;
+  }
+
+  .modal-overlay {
+    align-items: flex-end !important;
+  }
+
+  /* Day card simplify */
+  .day-temps {
+    width: auto;
+  }
+
+  /* Hourly cards smaller */
+  .hour-card {
+    width: 68px !important;
+  }
+
+  /* Nav user name hide */
+  .nav-user-name,
+  .user-name {
+    display: none;
+  }
+
+  /* Forecast nav overflows — hide labels */
+  .top-nav {
+    gap: 8px;
+    padding: 0 12px;
+  }
+
+  .nav-link-btn {
+    padding: 6px 8px;
+    font-size: 0.72rem;
+    letter-spacing: 0;
+  }
+
+  .page-title {
+    display: none;
+  }
+
+  /* Alert chips wrap */
+  .wbd-chips {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* Leaflet map resize */
+  #tripMap,
+  #disasterMap {
+    height: 240px !important;
+  }
+}
+
+/* ── No horizontal scroll globally ──────────────────────── */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ── Touch-friendly tap targets ─────────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+
+  .nav-link,
+  .ss-nav-links a,
+  .nav-link-btn,
+  .btn,
+  .sev-btn,
+  .chip,
+  .cat-card,
+  .layer-btn,
+  .ctrl-btn,
+  .cep-btn {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* ── Dashboard CSS fixes ────────────────────────────────── */
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 18px 16px 14px;
+  }
+
+  .stats-row,
+  .content-area {
+    padding: 0 14px;
+  }
+
+  .dashboard-title {
+    font-size: 20px;
+  }
+
+  .nav-right .role-badge {
+    display: none;
+  }
+
+  .btn-logout span {
+    display: none;
+  }
+}
+
+/* ── Forecast page fixes ─────────────────────────────────── */
+@media (max-width: 768px) {
+  .current-card {
+    padding: 0 12px;
+  }
+
+  .cur-temp {
+    font-size: 2.8rem !important;
+  }
+
+  .city-name {
+    font-size: 1.1rem;
+  }
+
+  .section-wrap {
+    padding: 0 12px;
+  }
+
+  .detail-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .cur-inner {
+    padding: 20px 16px;
+  }
+
+  .detail-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .col-md-6,
+  .col-md-2,
+  .col-md-4 {
+    width: 100% !important;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .cur-emoji {
+    text-align: center;
+  }
+}
+
+/* ── Alert page fixes ────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dm-nav {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
+  .nav-center {
+    display: none;
+  }
+
+  .nav-right {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .nav-clock {
+    display: none;
+  }
+
+  .hero-section {
+    padding: 20px 14px;
+  }
+
+  .hero-title {
+    font-size: clamp(1.8rem, 6vw, 2.8rem);
+  }
+
+  .hero-stats {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .hstat {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .dm-main {
+    padding: 0 10px;
+  }
+
+  .wbd-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .wbd-chips {
+    flex-wrap: wrap;
+  }
+
+  .map-sidebar {
+    position: absolute !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-height: 50vh !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-sos,
+  .btn-report,
+  .btn-map-quick {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .resource-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ── Map page fixes ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .layer-panel {
+    width: 56px !important;
+  }
+
+  .layer-label {
+    display: none;
+  }
+
+  .timeline-bar {
+    right: 56px !important;
+  }
+
+  .top-nav .top-controls {
+    gap: 4px;
+  }
+
+  .ctrl-btn span,
+  .ctrl-btn:not(:has(i)) {
+    display: none;
+  }
+
+  .model-switcher {
+    display: none !important;
+  }
+
+  .color-scale {
+    display: none !important;
+  }
+
+  .bottom-toggles {
+    right: 64px !important;
+  }
+
+  .coords-display {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-nav {
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .search-wrap {
+    max-width: 150px !important;
+  }
+
+  .layer-panel {
+    display: none !important;
+  }
+
+  .timeline-bar {
+    right: 0 !important;
+  }
+}
+
+/* ── Trip page map ──────────────────────────────────────── */
+@media (max-width: 780px) {
+  .hero {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  .main {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  .nav-clock {
+    display: none !important;
+  }
+
+  .nav-agent-badge span {
+    display: none;
+  }
+
+  .nav-pill-txt {
+    display: none;
+  }
+}
+
+/* ── Auth pages ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .login-card {
+    flex-direction: column;
+  }
+
+  .left-panel {
+    display: none !important;
+  }
+
+  .right-panel {
+    padding: 28px 20px !important;
+  }
+}
+
+/* ── Admin dashboard ────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 220px !important;
+    min-width: 220px !important;
+  }
+
+  .main-content {
+    margin-left: 220px !important;
+  }
+}
+
+/* ── Common utiltiy classes ─────────────────────────────── */
+.d-mobile-none {}
+
+.d-mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .d-mobile-none {
+    display: none !important;
+  }
+
+  .d-mobile-only {
+    display: flex !important;
+  }
+}
+
+/* ── Prevent toast overflow ─────────────────────────────── */
+.toast-container,
+.toast-stack {
+  max-width: calc(100vw - 32px);
+  right: 16px !important;
+}
+
+.toast,
+.toast-stack .toast {
+  min-width: 200px !important;
+  max-width: min(360px, calc(100vw - 32px)) !important;
+}

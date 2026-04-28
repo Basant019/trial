@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkySafe | Disaster Management & Command Center</title>
+  <meta name="description" content="SkySafe Disaster Management Centre — real-time disaster alerts, command map, and emergency response."/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <link rel="stylesheet" href="frontend/css/global.css"/>
+  <link rel="stylesheet" href="frontend/css/alert.css"/>
+  <link rel="stylesheet" href="frontend/css/responsive.css"/>
+  <script src="frontend/js/theme.js"></script>
+</head>
+<body>
+
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- TOP NAV -->
+  <nav class="dm-nav" id="alertNav">
+    <a href="dashboard.html" class="nav-brand">SKY<span>SAFE</span></a>
+    <div class="nav-center d-mobile-none">
+      <span class="pulse-dot"></span>
+      <span class="nav-status">DISASTER MANAGEMENT CENTRE</span>
+    </div>
+    <div class="nav-right">
+      <button class="nav-btn" onclick="switchView('dashboard')" id="btnDashboard">
+        <i class="fas fa-chart-line"></i> <span>Dashboard</span>
+      </button>
+      <button class="nav-btn" onclick="switchView('map')" id="btnMap">
+        <i class="fas fa-map"></i> <span>Command Map</span>
+      </button>
+      <a href="forecast.html" class="nav-btn"><i class="fas fa-cloud-bolt"></i> <span>Forecast</span></a>
+      <a href="trip.html" class="nav-btn"><i class="fas fa-map-location-dot"></i> <span>Trip</span></a>
+      <a href="dashboard.html" class="nav-btn"><i class="fas fa-gauge-high"></i> <span>My Dashboard</span></a>
+      <div class="nav-clock d-mobile-none" id="navClock">00:00:00</div>
+      <button class="theme-toggle" id="themeToggle" title="Toggle Theme" style="margin-left:8px;">
+        <i class="fas fa-sun"></i>
+        <i class="fas fa-moon" style="display:none;"></i>
+      </button>
+      <button id="alertHamburger" aria-label="Menu" style="display:none; width:38px; height:38px; background:rgba(0,200,255,0.08); border:1px solid rgba(0,200,255,0.2); border-radius:8px; color:#00c8ff; display:flex; align-items:center; justify-content:center; font-size:16px; margin-left:8px;">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+  <div id="alertMobileMenu" style="display:none; position:fixed; top:56px; left:0; right:0; background:rgba(8,12,22,0.98); border-bottom:1px solid rgba(0,200,255,0.12); padding:12px 16px 16px; z-index:1001; flex-direction:column; gap:8px;">
+    <a href="dashboard.html" style="display:flex;align-items:center;gap:10px;padding:10px 14px;color:#5a7a99;text-decoration:none;border-radius:8px;"> <i class="fas fa-gauge-high"></i> Dashboard</a>
+    <button onclick="switchView('dashboard')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;color:#5a7a99;border:none;background:none;border-radius:8px;cursor:pointer;"> <i class="fas fa-chart-line"></i> Dashboard</button>
+    <button onclick="switchView('map')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;color:#5a7a99;border:none;background:none;border-radius:8px;cursor:pointer;"> <i class="fas fa-map"></i> Command Map</button>
+    <a href="forecast.html" style="display:flex;align-items:center;gap:10px;padding:10px 14px;color:#5a7a99;text-decoration:none;border-radius:8px;"> <i class="fas fa-cloud-bolt"></i> Forecast</a>
+    <a href="trip.html" style="display:flex;align-items:center;gap:10px;padding:10px 14px;color:#5a7a99;text-decoration:none;border-radius:8px;"> <i class="fas fa-map-location-dot"></i> Trip</a>
+    <a href="dashboard.html" style="display:flex;align-items:center;gap:10px;padding:10px 14px;color:#5a7a99;text-decoration:none;border-radius:8px;"> <i class="fas fa-gauge-high"></i> My Dashboard</a>
+  </div>
+
+  <!-- VIEW: DASHBOARD -->
+  <div id="dashboardView" class="view-container active">
+    <div class="dm-wrapper">
+      <!-- HERO BANNER -->
+      <section class="hero-section">
+        <div class="hero-bg-grid"></div>
+        <div class="hero-content">
+          <div class="hero-tag">
+            <span class="htag-dot"></span> EMERGENCY OPERATIONS ACTIVE
+          </div>
+          <h1 class="hero-title">Disaster<br/><span>Management</span></h1>
+          <p class="hero-sub">
+            Centralised command dashboard for real-time disaster monitoring,
+            resource coordination, and emergency response management.
+          </p>
+          <div class="hero-actions">
+            <button class="btn-sos" id="sosBtn" onclick="triggerSOS()">
+              <i class="fas fa-siren-on"></i> ACTIVATE SOS
+              <span class="sos-ring"></span>
+            </button>
+            <button class="btn-report" onclick="openReportModal()">
+              <i class="fas fa-file-circle-exclamation"></i> File Incident Report
+            </button>
+            <button class="btn-map-quick" onclick="switchView('map')">
+              <i class="fas fa-map-location-dot"></i> Open Command Map
+            </button>
+          </div>
+        </div>
+
+        <!-- Live stat pills -->
+        <div class="hero-stats">
+          <div class="hstat red">
+            <div class="hstat-val" id="statActive">0</div>
+            <div class="hstat-lbl">Active Disasters</div>
+          </div>
+          <div class="hstat orange">
+            <div class="hstat-val" id="statAffected">Live Data</div>
+            <div class="hstat-lbl">NASA EONET Feed</div>
+          </div>
+          <div class="hstat yellow">
+            <div class="hstat-val" id="statTeams">143</div>
+            <div class="hstat-lbl">Teams Deployed</div>
+          </div>
+          <div class="hstat green">
+            <div class="hstat-val" id="statRescued">18,430</div>
+            <div class="hstat-lbl">Rescued Today</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="dm-main container-fluid px-4">
+        <div class="row g-4">
+
+          <!-- LEFT COLUMN -->
+          <div class="col-xl-8">
+
+            <!-- ACTIVE DISASTERS TABLE -->
+            <div class="dm-card mb-4">
+              <div class="card-hdr">
+                <div class="card-hdr-left">
+                  <span class="card-dot red"></span>
+                  <h2 class="card-title">Active Disasters (NASA EONET)</h2>
+                </div>
+                <div class="card-hdr-right">
+                  <button class="btn-sm-sky me-2" onclick="refreshDisasters()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                  </button>
+                  <select class="dm-select" id="disasterFilter" onchange="filterDisasters()">
+                    <option value="all">All Types</option>
+                    <option value="flood">Flood</option>
+                    <option value="storm">Storm</option>
+                    <option value="earthquake">Earthquake</option>
+                    <option value="fire">Wildfire</option>
+                    <option value="landslide">Landslide</option>
+                    <option value="volcano">Volcano</option>
+                  </select>
+                </div>
+              </div>
+              <div class="disaster-list" id="disasterList">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- RESPONSE TIMELINE -->
+            <div class="dm-card mb-4">
+              <div class="card-hdr">
+                <div class="card-hdr-left">
+                  <span class="card-dot blue"></span>
+                  <h2 class="card-title">Response Timeline</h2>
+                </div>
+              </div>
+              <div class="timeline-wrap" id="timelineWrap">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- RESOURCE DEPLOYMENT -->
+            <div class="dm-card mb-4">
+              <div class="card-hdr">
+                <div class="card-hdr-left">
+                  <span class="card-dot green"></span>
+                  <h2 class="card-title">Resource Deployment</h2>
+                </div>
+                <button class="btn-sm-sky" onclick="openResourceModal()">
+                  <i class="fas fa-plus"></i> Deploy
+                </button>
+              </div>
+              <div class="resource-grid" id="resourceGrid">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <!-- WEATHER-BASED DISASTER MANAGEMENT -->
+            <div class="wbd-section">
+              <div class="wbd-header">
+                <div class="wbd-header-left">
+                  <div class="wbd-icon"><i class="fas fa-cloud-bolt"></i></div>
+                  <div>
+                    <div class="wbd-tag">LIVE WEATHER INTELLIGENCE</div>
+                    <h2 class="wbd-title">Weather-Based Disaster Analysis</h2>
+                  </div>
+                </div>
+                <div class="wbd-header-right">
+                  <div class="wbd-search-bar">
+                    <i class="fas fa-search wbd-search-icon"></i>
+                    <input type="text" id="wbdCityInput" class="wbd-search-input" placeholder="Search city for live risk..."/>
+                    <button class="wbd-search-btn" onclick="loadWeatherRisk()">
+                      <i class="fas fa-bolt"></i> Analyse
+                    </button>
+                  </div>
+                  <div class="wbd-chips">
+                    <button class="wbd-chip" onclick="wbdQuick('Mumbai')">Mumbai</button>
+                    <button class="wbd-chip" onclick="wbdQuick('Chennai')">Chennai</button>
+                    <button class="wbd-chip" onclick="wbdQuick('Delhi')">Delhi</button>
+                    <button class="wbd-chip" onclick="wbdQuick('Kolkata')">Kolkata</button>
+                    <button class="wbd-chip" onclick="wbdQuick('Bhubaneswar')">Bhubaneswar</button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="wbdLoading" class="wbd-loading" style="display:none">
+                <div class="wbd-spinner"></div>
+                <span id="wbdLoadingCity">Fetching weather data...</span>
+              </div>
+
+              <div id="wbdResults" style="display:none">
+                <div class="wbd-city-banner" id="wbdCityBanner">
+                  <div class="wcb-left">
+                    <div class="wcb-city" id="wcbCity">—</div>
+                    <div class="wcb-coords" id="wcbCoords">—</div>
+                  </div>
+                  <div class="wcb-mid">
+                    <span class="wcb-emoji" id="wcbEmoji">🌤</span>
+                    <div>
+                      <div class="wcb-temp" id="wcbTemp">—</div>
+                      <div class="wcb-desc" id="wcbDesc">—</div>
+                    </div>
+                  </div>
+                  <div class="wcb-stats" id="wcbStats"></div>
+                  <div class="wcb-right">
+                    <div class="wcb-risk-badge" id="wcbRiskBadge">
+                      <div class="wrb-label">DISASTER RISK</div>
+                      <div class="wrb-val" id="wcbRiskVal">—</div>
+                      <div class="wrb-score" id="wcbRiskScore">Score: —/100</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-lg-8">
+                    <div class="dm-card mb-3">
+                      <div class="card-hdr">
+                        <div class="card-hdr-left">
+                          <span class="card-dot red"></span>
+                          <h2 class="card-title">Disaster Risk Analysis</h2>
+                        </div>
+                      </div>
+                      <div class="wbd-risk-grid" id="wbdRiskGrid"></div>
+                    </div>
+
+                    <div class="dm-card">
+                      <div class="card-hdr">
+                        <div class="card-hdr-left">
+                          <span class="card-dot green"></span>
+                          <h2 class="card-title">Response Recommendations</h2>
+                        </div>
+                      </div>
+                      <div class="wbd-reco-list" id="wbdRecoList"></div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4">
+                    <div class="dm-card mb-3">
+                      <div class="card-hdr">
+                        <div class="card-hdr-left">
+                          <span class="card-dot red"></span>
+                          <h2 class="card-title">Risk Score</h2>
+                        </div>
+                      </div>
+                      <div class="wbd-gauge-wrap">
+                        <svg id="wbdGaugeSvg" viewBox="0 0 200 130" class="wbd-gauge-svg">
+                          <defs>
+                            <linearGradient id="wbdGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                              <stop offset="0%"   stop-color="#00ff88"/>
+                              <stop offset="33%"  stop-color="#ffcc00"/>
+                              <stop offset="66%"  stop-color="#ff8800"/>
+                              <stop offset="100%" stop-color="#ff2244"/>
+                            </linearGradient>
+                          </defs>
+                          <path d="M20 110 A80 80 0 0 1 180 110" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="14" stroke-linecap="round"/>
+                          <path id="wbdGaugeArc" d="M20 110 A80 80 0 0 1 180 110" fill="none" stroke="url(#wbdGrad)" stroke-width="14" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="251"/>
+                          <line id="wbdGaugeNeedle" x1="100" y1="110" x2="100" y2="42" stroke="#ff4466" stroke-width="2.5" stroke-linecap="round" transform="rotate(-90 100 110)"/>
+                          <circle cx="100" cy="110" r="5" fill="#ff4466"/>
+                          <text x="14"  y="126" fill="#334455" font-size="7" font-family="Orbitron,monospace">LOW</text>
+                          <text x="88"  y="28"  fill="#334455" font-size="7" font-family="Orbitron,monospace">MED</text>
+                          <text x="163" y="126" fill="#334455" font-size="7" font-family="Orbitron,monospace">MAX</text>
+                        </svg>
+                        <div class="wbd-gauge-center">
+                          <div class="wbd-gcl-score" id="wbdGclScore">0</div>
+                          <div class="wbd-gcl-sub">/ 100</div>
+                        </div>
+                        <div class="wbd-gauge-level" id="wbdGaugeLevel">—</div>
+                        <div class="wbd-mini-bars" id="wbdMiniBars"></div>
+                      </div>
+                    </div>
+
+                    <div class="dm-card mb-3">
+                      <div class="card-hdr">
+                        <div class="card-hdr-left">
+                          <span class="card-dot red"></span>
+                          <h2 class="card-title">Weather Alerts</h2>
+                        </div>
+                      </div>
+                      <div class="wbd-alerts-list" id="wbdAlertsList"></div>
+                    </div>
+
+                    <div class="dm-card">
+                      <div class="card-hdr">
+                        <div class="card-hdr-left">
+                          <span class="card-dot yellow"></span>
+                          <h2 class="card-title">Safety Checklist</h2>
+                        </div>
+                        <span class="wbd-checklist-prog" id="wbdCheckProg">0 / 0</span>
+                      </div>
+                      <div class="wbd-checklist" id="wbdChecklist"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT COLUMN -->
+          <div class="col-xl-4">
+            <div class="dm-card mb-4">
+              <div class="card-hdr">
+                <div class="card-hdr-left">
+                  <span class="card-dot red"></span>
+                  <h2 class="card-title">National Threat Level</h2>
+                </div>
+              </div>
+              <div class="gauge-wrap">
+                <svg class="gauge-svg" viewBox="0 0 200 120">
+                  <defs>
+                    <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%"   stop-color="#00ff88"/>
+                      <stop offset="40%"  stop-color="#ffcc00"/>
+                      <stop offset="70%"  stop-color="#ff8800"/>
+                      <stop offset="100%" stop-color="#ff2244"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12" stroke-linecap="round"/>
+                  <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="63" id="gaugeArc"/>
+                  <line id="gaugeNeedle" x1="100" y1="100" x2="100" y2="30" stroke="#ff4466" stroke-width="2.5" stroke-linecap="round" transform="rotate(-45 100 100)"/>
+                  <circle cx="100" cy="100" r="6" fill="#ff4466" opacity="0.9"/>
+                  <text x="14"  y="116" fill="#445566" font-size="8" font-family="Orbitron,monospace">LOW</text>
+                  <text x="86"  y="24"  fill="#445566" font-size="8" font-family="Orbitron,monospace">MED</text>
+                  <text x="166" y="116" fill="#445566" font-size="8" font-family="Orbitron,monospace">EXT</text>
+                </svg>
+                <div class="gauge-label">
+                  <div class="gauge-val" id="threatVal">HIGH</div>
+                  <div class="gauge-sub">Threat Index: <span id="threatIndex">74</span>/100</div>
+                </div>
+              </div>
+              <div class="threat-bars" id="threatBars"></div>
+            </div>
+
+            <div class="dm-card mb-4">
+              <div class="card-hdr">
+                <div class="card-hdr-left">
+                  <span class="card-dot yellow"></span>
+                  <h2 class="card-title">Emergency Contacts</h2>
+                </div>
+              </div>
+              <div class="contacts-list" id="contactsList"></div>
+            </div>
+
+            <div class="dm-card mb-4">
+              <div class="card-hdr">
+                <div class="card-hdr-left">
+                  <span class="card-dot orange"></span>
+                  <h2 class="card-title">Quick Actions</h2>
+                </div>
+              </div>
+              <div class="quick-grid" id="quickGrid"></div>
+            </div>
+
+            <div class="dm-card">
+              <div class="card-hdr">
+                <div class="card-hdr-left">
+                  <span class="card-dot blue"></span>
+                  <h2 class="card-title">Weather Impact Forecast</h2>
+                </div>
+              </div>
+              <div class="weather-impact-list" id="weatherImpact"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW: COMMAND MAP -->
+  <div id="mapView" class="view-container">
+    <div class="map-fullscreen">
+      <div id="disasterMap"></div>
+      
+      <!-- Map Sidebar -->
+      <div class="map-sidebar">
+        <div class="map-controls">
+          <div class="map-title">
+            <i class="fas fa-satellite-dish"></i>
+            DISASTER COMMAND MAP
+          </div>
+          
+          <div class="location-search">
+            <input type="text" class="loc-search-input" id="citySearchInput" placeholder="Search city or location..."/>
+            <button class="loc-search-btn" onclick="searchCity()">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          
+          <div class="quick-cities">
+            <button class="city-chip" onclick="flyToCity([20.5937, 78.9629], 5, 'India')">India</button>
+            <button class="city-chip" onclick="flyToCity([28.6139, 77.2090], 10, 'Delhi')">Delhi</button>
+            <button class="city-chip" onclick="flyToCity([19.0760, 72.8777], 10, 'Mumbai')">Mumbai</button>
+            <button class="city-chip" onclick="flyToCity([13.0827, 80.2707], 10, 'Chennai')">Chennai</button>
+            <button class="city-chip" onclick="flyToCity([22.5726, 88.3639], 10, 'Kolkata')">Kolkata</button>
+            <button class="city-chip" onclick="flyToCity([12.9716, 77.5946], 10, 'Bangalore')">Bangalore</button>
+          </div>
+          
+          <button class="locate-btn" id="locateBtn" onclick="locateUser()">
+            <i class="fas fa-crosshairs"></i>
+            LOCATE ME & SCAN AREA
+          </button>
+          
+          <button class="btn-sm-sky w-100 mt-2" onclick="switchView('dashboard')">
+            <i class="fas fa-chart-line"></i> Back to Dashboard
+          </button>
+        </div>
+        
+        <div class="sidebar-disasters" id="sidebarDisasters">
+          <div class="sidebar-loading">
+            <div class="sidebar-spinner"></div>
+            <div>Loading disaster data...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- City Emergency Panel -->
+      <div class="city-emergency-panel" id="cityEmergencyPanel">
+        <div class="cep-header">
+          <div class="cep-city" id="cepCityName">City Name</div>
+          <button class="cep-close" onclick="closeCityPanel()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="cep-status" id="cepStatus">
+          <div class="cep-status-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="cep-status-text">
+            <div class="cep-status-label">Emergency Status</div>
+            <div class="cep-status-value" id="cepStatusValue">HIGH ALERT</div>
+          </div>
+        </div>
+        
+        <div class="cep-section">
+          <div class="cep-section-title">Active Threats</div>
+          <div id="cepAlerts"></div>
+        </div>
+        
+        <div class="cep-section">
+          <div class="cep-section-title">Quick Actions</div>
+          <div class="cep-actions">
+            <button class="cep-btn emergency" onclick="triggerSOS()">
+              <i class="fas fa-siren-on"></i> SOS
+            </button>
+            <button class="cep-btn" onclick="openReportModal()">
+              <i class="fas fa-file-circle-exclamation"></i> Report
+            </button>
+            <button class="cep-btn" onclick="showToast('Evacuation routes displayed', 'blue')">
+              <i class="fas fa-route"></i> Routes
+            </button>
+            <button class="cep-btn" onclick="showToast('Shelters highlighted', 'green')">
+              <i class="fas fa-house-chimney"></i> Shelters
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="map-legend">
+        <div class="legend-title">DISASTER TYPES</div>
+        <div class="legend-item">
+          <div class="legend-icon extreme"></div>
+          <span>Extreme Severity</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-icon severe"></div>
+          <span>High Severity</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-icon moderate"></div>
+          <span>Moderate Severity</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-icon low"></div>
+          <span>Low Severity</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <!-- SOS MODAL -->
+  <div class="modal-overlay" id="sosModal">
+    <div class="modal-box sos-modal-box">
+      <div class="modal-sos-icon">
+        <i class="fas fa-siren-on"></i>
+      </div>
+      <h2 class="modal-title">SOS ACTIVATED</h2>
+      <p class="modal-sub">Emergency broadcast sent to all response teams.<br/>Authorities have been notified.</p>
+      <div class="sos-countdown" id="sosCountdown">Connecting in 3...</div>
+      <button class="btn-modal-close" onclick="closeSOS()">Cancel SOS</button>
+    </div>
+  </div>
+
+  <!-- REPORT MODAL -->
+  <div class="modal-overlay" id="reportModal">
+    <div class="modal-box">
+      <div class="modal-hdr">
+        <h2 class="modal-title"><i class="fas fa-file-circle-exclamation"></i> File Incident Report</h2>
+        <button class="modal-x" onclick="closeReportModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <form id="reportForm" onsubmit="submitReport(event)">
+        <div class="mfield">
+          <label>Incident Type</label>
+          <select class="dm-select w-100" id="rType">
+            <option>Flood</option>
+            <option>Cyclone</option>
+            <option>Earthquake</option>
+            <option>Wildfire</option>
+            <option>Landslide</option>
+            <option>Tsunami</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="mfield">
+          <label>Location</label>
+          <input type="text" class="dm-input" id="rLocation" placeholder="District, State"/>
+        </div>
+        <div class="mfield">
+          <label>Severity</label>
+          <div class="severity-btns" id="severityBtns">
+            <button type="button" class="sev-btn" data-sev="low">Low</button>
+            <button type="button" class="sev-btn active" data-sev="moderate">Moderate</button>
+            <button type="button" class="sev-btn" data-sev="high">High</button>
+            <button type="button" class="sev-btn" data-sev="extreme">Extreme</button>
+          </div>
+        </div>
+        <div class="mfield">
+          <label>People Affected (est.)</label>
+          <input type="number" class="dm-input" id="rAffected" placeholder="e.g. 5000"/>
+        </div>
+        <div class="mfield">
+          <label>Description</label>
+          <textarea class="dm-input dm-textarea" id="rDesc" placeholder="Describe the situation..."></textarea>
+        </div>
+        <div class="mfield">
+          <label>Reporter Name / Agency</label>
+          <input type="text" class="dm-input" id="rReporter" placeholder="Your name or organisation"/>
+        </div>
+        <div id="reportMsg" class="report-msg"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-modal-cancel" onclick="closeReportModal()">Cancel</button>
+          <button type="submit" class="btn-modal-submit">Submit Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- RESOURCE MODAL -->
+  <div class="modal-overlay" id="resourceModal">
+    <div class="modal-box">
+      <div class="modal-hdr">
+        <h2 class="modal-title"><i class="fas fa-truck-fast"></i> Deploy Resource</h2>
+        <button class="modal-x" onclick="closeResourceModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <form onsubmit="submitResource(event)">
+        <div class="mfield">
+          <label>Resource Type</label>
+          <select class="dm-select w-100" id="resType">
+            <option>Rescue Team</option>
+            <option>Medical Unit</option>
+            <option>Relief Camp</option>
+            <option>Helicopter</option>
+            <option>Boat Squad</option>
+            <option>Fire Brigade</option>
+            <option>Army Battalion</option>
+          </select>
+        </div>
+        <div class="mfield">
+          <label>Deploy To</label>
+          <input type="text" class="dm-input" id="resDest" placeholder="Location / District"/>
+        </div>
+        <div class="mfield">
+          <label>Units</label>
+          <input type="number" class="dm-input" id="resUnits" placeholder="e.g. 5" min="1"/>
+        </div>
+        <div id="resourceMsg" class="report-msg"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-modal-cancel" onclick="closeResourceModal()">Cancel</button>
+          <button type="submit" class="btn-modal-submit">Deploy Now</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="frontend/js/alert.js"></script>
+  <script src="frontend/js/Map1.js"></script>
+  <script>
+    const aHam = document.getElementById('alertHamburger');
+    const aMenu = document.getElementById('alertMobileMenu');
+    if (aHam && aMenu) {
+      function checkAlertNav() {
+        const isSmall = window.innerWidth <= 768;
+        aHam.style.display = isSmall ? 'flex' : 'none';
+      }
+      checkAlertNav();
+      window.addEventListener('resize', checkAlertNav);
+      aHam.addEventListener('click', () => {
+        const isOpen = aMenu.style.display === 'flex';
+        aMenu.style.display = isOpen ? 'none' : 'flex';
+        aHam.querySelector('i').className = isOpen ? 'fas fa-bars' : 'fas fa-times';
+      });
+      document.addEventListener('click', (e) => {
+        if (!aHam.contains(e.target) && !aMenu.contains(e.target)) {
+          aMenu.style.display = 'none';
+          aHam.querySelector('i').className = 'fas fa-bars';
+        }
+      });
+    }
+
+    const alertThemeBtn = document.getElementById('themeToggle');
+    if (alertThemeBtn) {
+      alertThemeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (window.themeManager && typeof window.themeManager.toggle === 'function') {
+          window.themeManager.toggle();
+        }
+      });
+    }
+  </script>
+</body>
+</html>

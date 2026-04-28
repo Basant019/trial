@@ -1,0 +1,896 @@
+/* frontend/css/trip.css */
+
+/* ─── Google Fonts ─── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap');
+
+/* ─── CSS Variables ─── */
+:root {
+  --bg: #f4f7f6;
+  --bg-card: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.9);
+  --bg-input: #eef2f5;
+  --text-primary: #1d2b36;
+  --text-secondary: #4a5c6a;
+  --text-muted: #829ab1;
+  --accent: #2c6bed;
+  --accent-light: #e4f0fc;
+  --accent-hover: #1f50b5;
+  --green: #0e9f6e;
+  --green-bg: #def7ec;
+  --yellow: #d0811f;
+  --yellow-bg: #fdf6b2;
+  --red: #e02424;
+  --red-bg: #fde8e8;
+  --border: rgba(188, 204, 220, 0.3);
+  --shadow-sm: 0 4px 6px rgba(18, 43, 64, 0.04);
+  --shadow-md: 0 12px 30px rgba(18, 43, 64, 0.08);
+  --shadow-lg: 0 24px 50px rgba(18, 43, 64, 0.12);
+  --radius: 20px;
+  --radius-sm: 10px;
+  --transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --header-bg: linear-gradient(135deg, #0b1a28 0%, #152c42 100%);
+  --hero-gradient: linear-gradient(135deg, #1f55d2 0%, #3580ff 100%);
+}
+
+[data-theme="dark"] {
+  --bg: #0d1117;
+  --bg-card: #161b22;
+  --bg-glass: rgba(22,27,34,0.85);
+  --bg-input: #1c2533;
+  --text-primary: #e6edf3;
+  --text-secondary: #8d96a0;
+  --text-muted: #5a6672;
+  --accent: #58a6ff;
+  --accent-light: #1c2d4a;
+  --accent-hover: #79b8ff;
+  --green: #3fb950;
+  --green-bg: #0d2b1a;
+  --yellow: #d29922;
+  --yellow-bg: #2a1f00;
+  --red: #f85149;
+  --red-bg: #2d1a1a;
+  --border: #30363d;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.5);
+  --header-bg: linear-gradient(135deg, #0d1b35 0%, #1a2f5c 50%, #0a2540 100%);
+}
+
+/* ─── Reset & Base ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background var(--transition), color var(--transition);
+  line-height: 1.6;
+}
+
+
+
+/* ─── Hero ─── */
+.hero {
+  background: var(--hero-gradient);
+  padding: 108px 24px 72px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  color: rgba(255,255,255,0.7);
+  font-size: 1.05rem;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* ─── Layout ─── */
+.page-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+
+/* Pull the form card up into the hero section */
+.form-card-outer {
+  margin-top: -40px;
+}
+
+/* ─── Card ─── */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  padding: 28px;
+  transition: background var(--transition), border var(--transition);
+}
+
+.card-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+/* ─── Form Grid ─── */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group.full {
+  grid-column: 1 / -1;
+}
+
+label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+input, select {
+  background: var(--bg-input);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.93rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+  width: 100%;
+}
+
+input:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+input::placeholder { color: var(--text-muted); }
+
+/* ─── Interests ─── */
+.interests-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.interest-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 50px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-input);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+  user-select: none;
+}
+
+.interest-chip input[type="checkbox"] { display: none; }
+
+.interest-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
+.interest-chip.checked {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+/* ─── Submit Button ─── */
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #2563eb, #0284c7);
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  margin-top: 8px;
+  transition: transform var(--transition), box-shadow var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ─── Loading Spinner ─── */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Results Section ─── */
+#results { display: none; }
+#results.visible { display: block; }
+
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+@media (max-width: 900px) {
+  .results-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── Weather Card ─── */
+.weather-banner {
+  background: var(--header-bg);
+  border-radius: var(--radius);
+  padding: 24px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.weather-icon img {
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+}
+
+.weather-info h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.8rem;
+  line-height: 1;
+}
+
+.weather-info p {
+  font-size: 1rem;
+  opacity: 0.8;
+  text-transform: capitalize;
+  margin-top: 4px;
+}
+
+.weather-meta {
+  display: flex;
+  gap: 20px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.weather-meta span {
+  font-size: 0.85rem;
+  opacity: 0.75;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ─── Safety Badge ─── */
+.safety-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-top: 16px;
+}
+
+.safety-badge.safe { background: var(--green-bg); color: var(--green); }
+.safety-badge.caution { background: var(--yellow-bg); color: var(--yellow); }
+.safety-badge.danger { background: var(--red-bg); color: var(--red); }
+
+/* ─── Itinerary ─── */
+.itinerary-day {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.day-header {
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 12px 16px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  transition: background var(--transition);
+}
+
+.day-header:hover { background: var(--accent-light); filter: brightness(0.95); }
+
+.day-body {
+  padding: 16px;
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+
+.day-body.open { display: block; }
+
+.time-slot {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--border);
+}
+
+.time-slot:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.time-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  min-width: 70px;
+  padding-top: 2px;
+}
+
+.time-note { font-size: 0.88rem; color: var(--text-secondary); flex: 1; }
+
+.place-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.place-chip {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.place-chip strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  margin-bottom: 4px;
+}
+
+/* ─── Budget Table ─── */
+.budget-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.budget-table th {
+  text-align: left;
+  padding: 10px 14px;
+  background: var(--bg-input);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
+}
+
+.budget-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.budget-table tr:last-child td {
+  border-bottom: none;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.budget-highlight {
+  text-align: center;
+  padding: 20px;
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius-sm);
+  margin-top: 16px;
+}
+
+.budget-highlight .total-amt {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  color: var(--accent);
+}
+
+.budget-highlight .total-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ─── Packing / Safety Lists ─── */
+.checklist {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.87rem;
+  color: var(--text-secondary);
+  background: var(--bg-input);
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.checklist li::before {
+  content: '✓';
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--green);
+  background: var(--green-bg);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.safety-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+.safety-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.87rem;
+  color: var(--text-secondary);
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+}
+
+.safety-list li::before {
+  content: '⚑';
+  color: var(--yellow);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+/* ─── Map ─── */
+#trip-map {
+  height: 380px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* ─── Place Cards (map section) ─── */
+.place-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.place-card {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.place-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.place-card-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  background: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+
+.place-card-body {
+  padding: 12px;
+}
+
+.place-card-body h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.place-card-body p {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.place-tag {
+  display: inline-block;
+  font-size: 0.68rem;
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 50px;
+  margin-top: 6px;
+  font-weight: 600;
+}
+
+/* ─── Error Banner ─── */
+.error-banner {
+  background: var(--red-bg);
+  color: var(--red);
+  border: 1px solid var(--red);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  display: none;
+}
+
+.error-banner.visible { display: flex; }
+
+/* ─── Section Spacing ─── */
+.section-gap { margin-top: 24px; }
+
+/* ─── Animations ─── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeIn 0.4s ease forwards; }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .header-inner { gap: 12px; }
+  .logo-text { font-size: 1.3rem; }
+  .hero { padding: 32px 20px 56px; }
+  .card { padding: 20px; }
+  .form-grid { grid-template-columns: 1fr 1fr; }
+  .weather-banner { flex-direction: column; align-items: flex-start; }
+  .weather-info h2 { font-size: 2.2rem; }
+}
+
+@media (max-width: 480px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .place-list { grid-template-columns: 1fr; }
+  .checklist { grid-template-columns: 1fr; }
+}
+
+/* ─── Leaflet popup override ─── */
+.leaflet-popup-content-wrapper {
+  border-radius: 10px !important;
+  font-family: 'DM Sans', sans-serif !important;
+}
+
+
+/* ─── Autocomplete ─── */
+.autocomplete-wrapper { position: relative; width: 100%; display: block; }
+.autocomplete-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: var(--shadow-md);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: none;
+}
+.autocomplete-list li {
+  padding: 10px 14px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--border);
+  transition: all var(--transition);
+}
+.autocomplete-list li:last-child { border-bottom: none; }
+.autocomplete-list li:hover { background: var(--accent); color: white; }
+
+/* ─── Timeline ─── */
+.timeline-event.break-event .timeline-icon {
+  background: var(--yellow);
+}
+.timeline-event.break-event .timeline-content {
+  background: var(--yellow-bg);
+  border-color: var(--yellow);
+}
+
+/* ─── Timeline Full Styles ─── */
+.timeline { display: flex; flex-direction: column; gap: 0; margin-top: 12px; }
+
+.timeline-event {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--border);
+  position: relative;
+}
+.timeline-event:last-child { border-bottom: none; }
+
+.timeline-time {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  min-width: 68px;
+  letter-spacing: 0.3px;
+  padding-top: 3px;
+}
+
+.timeline-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.timeline-content {
+  flex: 1;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+.timeline-content h4 {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.timeline-content p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 2px;
+}
+
+/* ─── Trip Progress Bar ─── */
+.trip-summary-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.trip-summary-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.trip-summary-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trip-summary-meta strong {
+  color: var(--accent);
+}
+
+.trip-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trip-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trip-progress-label-text {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.trip-progress-pct {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-light);
+  padding: 2px 8px;
+  border-radius: 50px;
+}
+
+.trip-progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-input);
+  border-radius: 50px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.trip-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2563eb, #06b6d4);
+  border-radius: 50px;
+  transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  min-width: 4px;
+}
+
+.trip-progress-days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.trip-day-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--bg-input);
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: default;
+  transition: all 0.2s ease;
+}
+
+.trip-day-dot.done {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.trip-day-dot.today {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+  box-shadow: 0 0 0 3px var(--green-bg);
+  animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 3px var(--green-bg); }
+  50% { box-shadow: 0 0 0 6px var(--green-bg); }
+}
+
+/* ─── Day Header Improved ─── */
+.day-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.day-number {
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.day-theme-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--accent);
+  color: white;
+  padding: 2px 10px;
+  border-radius: 50px;
+  letter-spacing: 0.3px;
+}
+
+/* ─── Day Notes ─── */
+.day-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border-left: 3px solid var(--accent);
+}
+
+.day-note {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.day-note strong {
+  color: var(--text-primary);
+}
